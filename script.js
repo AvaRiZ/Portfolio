@@ -1,73 +1,110 @@
-let menuIcon = document.querySelector('#menu-icon');
-let navbar = document.querySelector('.navbar');
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const navLinks = document.querySelectorAll('.topbar nav a');
+const sections = document.querySelectorAll('section');
+const revealItems = document.querySelectorAll('.hero-card, .section h2, .about-content, .project-card, .contact-form');
 
-menuIcon.onclick = () => {
-    menuIcon.classList.toggle('bx-x');
-    navbar.classList.toggle('active');
-};
+function applyTheme(theme) {
+    const isDark = theme === 'dark';
+    document.body.classList.toggle('dark-mode', isDark);
 
+    if (themeIcon) {
+        themeIcon.className = isDark ? 'bx bx-sun' : 'bx bx-moon';
+    }
 
-let sections = document.querySelectorAll('section');
-let navLinks = document.querySelectorAll('header nav a');
+    if (themeToggle) {
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+    }
 
-window.onscroll = () => {
-    sections.forEach(sec => {
-        let top = window.scrollY;
-        let offset = sec.offsetTop - 150;
-        let height = sec.offsetHeight;
-        let id = sec.getAttribute('id');
+    localStorage.setItem('theme', theme);
+}
 
-        if(top >= offset && top < offset + height) {
-            navLinks.forEach(links => {
-                links.classList.remove('active');
-                document.querySelector('header nav a[href*=' + id + ']').classList.add('active');
-            });
-        };
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    applyTheme(initialTheme);
+}
+
+function setActiveNavLink() {
+    let currentId = 'home';
+
+    sections.forEach((section) => {
+        const sectionTop = section.offsetTop - 120;
+        const sectionHeight = section.offsetHeight;
+
+        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+            currentId = section.id;
+        }
     });
 
+    navLinks.forEach((link) => {
+        const isActive = link.getAttribute('href') === `#${currentId}`;
+        link.classList.toggle('active', isActive);
+    });
+}
 
-let header = document.querySelector('.header');
+function revealOnScroll() {
+    revealItems.forEach((item, index) => {
+        const itemTop = item.getBoundingClientRect().top;
+        const triggerPoint = window.innerHeight * 0.9;
 
-header.classList.toggle('sticky', window.scrollY > 100);
+        if (itemTop < triggerPoint) {
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+            item.style.transitionDelay = `${index * 80}ms`;
+        }
+    });
+}
 
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const isDark = document.body.classList.contains('dark-mode');
+        applyTheme(isDark ? 'light' : 'dark');
+    });
+}
 
-menuIcon.classList.remove('bx-x');
-navbar.classList.remove('active');
-
-};
-
-
-var swiper = new Swiper(".mySwiper", {
-    slidesPerView: 1,
-    spaceBetween: 50,
-    loop: true,
-    grabCursor: true,
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
+window.addEventListener('scroll', () => {
+    setActiveNavLink();
+    revealOnScroll();
+});
+window.addEventListener('load', () => {
+    initTheme();
+    setActiveNavLink();
+    revealOnScroll();
 });
 
+initTheme();
+setActiveNavLink();
+revealOnScroll();
 
-let darkModeIcon = document.querySelector('#darkMode-icon');
-
-darkModeIcon.onclick = () => {
-    darkModeIcon.classList.toggle('bx-sun');
-    document.body.classList.toggle('dark-mode');
-};
-
-
-ScrollReveal({
-    distance: '80px',
-    duration: 2000,
-    delay: 200
+revealItems.forEach((item) => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(24px)';
+    item.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
 });
 
-ScrollReveal().reveal('.home-content, .heading', { origin: 'top' });
-ScrollReveal().reveal('.home-img img, .services-container, .project-box, .testimonial-wrapper, .contact form', { origin: 'bottom' });
-ScrollReveal().reveal('.home-content h1, .about-img img', { origin: 'left' });
-ScrollReveal().reveal('.home-content h3, .home-content p, .about-content', { origin: 'right' });
+// Project filtering
+const filterBtns = document.querySelectorAll('.filter-btn');
+const projectCards = document.querySelectorAll('.project-card[data-category]');
+
+filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        // Update active button
+        filterBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filterValue = btn.getAttribute('data-filter');
+
+        // Filter project cards
+        projectCards.forEach((card) => {
+            const cardCategory = card.getAttribute('data-category');
+            
+            if (filterValue === 'all' || filterValue === cardCategory) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    });
+});

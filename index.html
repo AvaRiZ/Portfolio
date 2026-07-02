@@ -1,219 +1,1081 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Portfolio</title>
+    <title>Yaji.DEV Portfolio</title>
+    <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.css' rel='stylesheet'>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Light, friendly palette */
+        :root {
+            --bg-body: #f9f9f9;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --primary: #2563eb; /* nice blue */
+            --primary-hover: #1d4ed8;
+            --text-dark: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --radius: 8px;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 24%),
+                radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.10), transparent 26%),
+                var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        body.dark-mode {
+            --bg-body: #111827;
+            --bg-sidebar: #1f2937;
+            --bg-card: #1f2937;
+            --primary: #60a5fa;
+            --primary-hover: #3b82f6;
+            --text-dark: #f9fafb;
+            --text-muted: #d1d5db;
+            --border: #374151;
+            --shadow: 0 2px 10px rgba(0,0,0,0.35);
+        }
+        /* Layout: top navbar + main */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .topbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .topbar nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .topbar nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1rem;
+            border-radius: var(--radius);
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s;
+        }
+        .topbar nav a:hover,
+        .topbar nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+        .topbar nav a i {
+            font-size: 1.1rem;
+        }
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.8rem;
+            height: 2.8rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+        .main {
+            flex: 1;
+            padding: 2.5rem;
+            width: min(1300px, 100%);
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        header h1 {
+            font-size: 2.2rem;
+            margin: 0.5rem 0;
+            color: var(--primary);
+        }
+        header p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .hero-eyebrow {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .hero-card {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 3.25rem 3.5rem;
+            background: linear-gradient(135deg, var(--bg-card), rgba(37, 99, 235, 0.08));
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+        }
+        .hero-card h1 {
+            font-size: clamp(3.4rem, 6.4vw, 5.4rem);
+            line-height: 1.02;
+            letter-spacing: -0.05em;
+            margin-bottom: 0.95rem;
+            font-weight: 800;
+        }
+        .hero-card p {
+            font-size: 1.2rem;
+            max-width: 780px;
+            margin: 0 auto;
+            color: var(--text-muted);
+        }
+        .hero-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.85rem;
+            margin-top: 1.4rem;
+        }
+        .hero-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.75rem 1.1rem;
+            border-radius: 999px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .hero-links a.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dark);
+        }
+        .hero-links a:hover {
+            transform: translateY(-2px);
+            background: var(--primary-hover);
+        }
+        .hero-links a.secondary:hover {
+            background: var(--bg-body);
+            color: var(--text-dark);
+        }
+        .skills-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            margin-top: 1rem;
+        }
+        .skill-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+        }
+        .skill-category h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .skill-tag {
+            display: inline-block;
+            padding: 0.4rem 0.75rem;
+            background: rgba(37, 99, 235, 0.12);
+            color: var(--primary);
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+        .project-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+        .filter-btn {
+            padding: 0.6rem 1rem;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            border-radius: 999px;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .filter-btn.active:hover {
+            background: var(--primary-hover);
+        }
+        .project-card[data-category] {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .project-card[data-category].hidden {
+            display: none;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+        .footer-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        .footer-links a:hover {
+            color: var(--primary-hover);
+        }
+        .section {
+            margin-bottom: 4rem;
+        }
+        .section + .section {
+            border-top: 1px solid var(--border);
+            padding-top: 3rem;
+        }
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .about-content p {
+            font-size: 1.18rem;
+            color: var(--text-muted);
+            line-height: 1.9;
+        }
+        .about-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .highlight-card {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(14, 165, 233, 0.06));
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .highlight-card:hover {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(14, 165, 233, 0.1));
+            transform: translateY(-4px);
+        }
+        .highlight-card i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .highlight-card h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .about-section {
+            display: grid;
+            gap: 1.25rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .about-intro {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            line-height: 1.8;
+            padding: 1rem 0;
+            border-left: 4px solid var(--primary);
+            padding-left: 1.5rem;
+        }
+        /* Project cards â€“ grid */
+        .projects-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+        .project-card {
+            background: var(--bg-card);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 16px 35px rgba(15, 23, 42, 0.09);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+        }
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .project-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+        .project-body {
+            padding: 1.25rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .project-body h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+        .project-body p {
+            flex: 1;
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .info-grid {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        }
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+        }
+        .info-card h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.15rem;
+            color: var(--text-dark);
+        }
+        .info-card ul {
+            margin: 0;
+            padding-left: 1.15rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+        .info-card li {
+            margin-bottom: 0.35rem;
+        }
+        .info-card .year {
+            display: inline-block;
+            margin-bottom: 0.55rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+        .timeline {
+            position: relative;
+            display: grid;
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.7rem;
+            top: 0.25rem;
+            bottom: 0.25rem;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), transparent);
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 1.8rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0.2rem;
+            top: 0.4rem;
+            width: 0.95rem;
+            height: 0.95rem;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+        }
+        .timeline-item .date {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .timeline-item h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+        .timeline-item p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.96rem;
+            line-height: 1.6;
+        }
+        .education-timeline {
+            position: relative;
+            max-width: 700px;
+            margin: 2rem auto 0;
+            padding-left: 2.5rem;
+        }
+        .education-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-hover), transparent);
+            border-radius: 2px;
+        }
+        .education-timeline .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .education-timeline .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        .education-timeline .timeline-marker {
+            position: absolute;
+            left: -2.3rem;
+            top: 0.4rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 4px solid var(--bg-body);
+            box-shadow: 0 0 0 3px var(--primary);
+        }
+        .education-timeline .timeline-date {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+        .education-timeline .timeline-content h3 {
+            margin: 0.25rem 0 0.35rem 0;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
+        .education-timeline .timeline-school {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        .education-timeline .timeline-content p:not(.timeline-school) {
+            margin: 0.5rem 0 0 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .info-card a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .project-links {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+        .project-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.5rem 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            color: var(--primary);
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .project-links a:hover {
+            background: var(--primary);
+            color: white;
+        }
+        /* Contact form */
+        .contact-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1rem;
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 0.85rem 0.95rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font: inherit;
+            background: rgba(255,255,255,0.7);
+        }
+        body.dark-mode .contact-form input,
+        body.dark-mode .contact-form textarea {
+            background: rgba(17,24,39,0.65);
+            color: var(--text-dark);
+        }
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .contact-form button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .contact-form button:hover {
+            background: var(--primary-hover);
+        }
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+            background: var(--bg-card);
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+        .footer-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        .footer-links a:hover {
+            color: var(--primary-hover);
+        }
+        .skills-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            margin-top: 1rem;
+        }
+        .skill-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+        }
+        .skill-category h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .skill-tag {
+            display: inline-block;
+            padding: 0.4rem 0.75rem;
+            background: rgba(37, 99, 235, 0.12);
+            color: var(--primary);
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+        .project-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+        .filter-btn {
+            padding: 0.6rem 1rem;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            border-radius: 999px;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .filter-btn.active:hover {
+            background: var(--primary-hover);
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem 1.25rem;
+            }
+            .topbar nav {
+                width: 100%;
+                gap: 0.25rem;
+            }
+            .main {
+                padding: 1.25rem;
+            }
+            .hero-card {
+                padding: 2rem 1.25rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
-
-    <header class="header">
-        <a href="#" class="logo">YAJI</a>
-
-        <nav class="navbar">
-            <a href="#home" class="active">Home</a>
-            <a href="#about">About</a>
-            <a href="#services">Services</a>
-            <a href="#project">Project</a>
-            <a href="#contact">Contact</a>
-        </nav>
-
-        <div class="bx bx-moon" id="darkMode-icon"></div>
-
-        <div class="bx bx-menu" id="menu-icon"></div>
-    </header>
-
-    <section class="home" id="home">
-        <div class="home-content">
-            <h3>Hello, I am</h3>
-            <h1>YAJI</h1>
-            <p>
-                I'm a data analyst who loves to uncover insights from data
-            </p>
-            <p>Currently I am a Computer Engineering student at Batangas State University - The National Engineering University,
-               where I learn how to analyze and visualize data</p>
-
-            <div class="social-media">
-                <a href="www.linkedin.com/in/jayniel-pernecita"><i class='bx bxl-linkedin'></i></a>
-                <a href="https://github.com/AvaRiZ"><i class='bx bxl-github'></i></a>
-            </div>
-
-            <a href="https://drive.google.com/file/d/1cYqg_a1Ms-nTJDv_2YhV_J47eX0lPUiU/view?usp=sharing" class="btn">Download CV</a>
-        </div>
-
-        <div class="profession-container">
-            <div class="profession-box">
-                <div class="profession" style="--i:0;">
-                    <i class='bx bx-code-alt'></i>
-                    <h3>Data Analyst</h3>
-                </div>
-                <div class="profession" style="--i:1;">
-                    <i class='bx bx-code-alt'></i>
-                    <h3>Programmer</h3>
-                </div>
-                <div class="profession" style="--i:2;">
-                    <i class='bx bx-code-alt'></i>
-                    <h3>Web Development</h3>
-                </div>
-                <div class="profession" style="--i:3;">
-                    <i class='bx bx-code-alt'></i>
-                    <h3>Data Visualization</h3>
-                </div>
-
-                <div class="circle"></div>
-            </div>
-
-            <div class="overlay"></div>
-        </div>
-
-        <div class="home-img">
-            <img src="images/home.png" alt="">
-        </div>
-    </section>
-
-    <section class="about" id="about">
-        <div class="about-img">
-            <img src="images/about.png" alt="">
-        </div>
-
-        <div class="about-content">
-            <h2 class="heading">About <span>Me</span></h2>
-            <h3>
-                Welcome to my portfolio. 
-                I'm Jayniel, a hands-on developer and data enthusiast with experience creating web applications and data-driven tools.
-            </h3>
-            <p>
-                Here you'll find my work in web development and data analytics,
-                including projects like e-commerce platforms, data dashboards, and automation systems. This site serves as both a showcase and a log of my technical growth.
-            </p>
-            <p>
-                 Thanks for stopping by. 
-                 I hope you find my projects interesting. 
-                 If you have any thoughts or opportunities to collaborate, I'd love to hear from you.
-            </p>
-            <a href="#" class="btn">Read More</a>
-        </div>
-    </section>
-
-    <section class="services" id="services">
-        <h2 class="heading">My <span>Services</span></h2>
-
-        <div class="services-container">
-            <div class="services-box">
+    <div class="wrapper">
+        <header class="topbar">
+            <div class="logo">
                 <i class='bx bx-code-alt'></i>
-                <h3>Data Analytics</h3>
-                <p>I am a data analyst with a focus on extracting insights and creating effective solutions from data.</p>
-                <a href="#" class="btn">Read More</a>
+                <span>Yaji.dev</span>
             </div>
-            <div class="services-box">
-                <i class='bx bxs-paint'></i>
-                <h3>Web Devlopment</h3>
-                <p>A practical and motivated developer with experience building full-stack web applications. I have developed several functional, client-driven systems including portfolio websites and a patient management system. My skillset encompasses front-end development with modern frameworks like Next.js, back-end logic implementation, and deploying interactive data applications using tools like Streamlit.</p>
-                <a href="#" class="btn">Read More</a>
-            </div>
-            <div class="services-box">
-                <i class='bx bx-bar-chart-alt'></i>
-                <h3>Data Visualization</h3>
-                <p>I build interactive visualizations to transform complex data into clear, actionable insights. For my Data Analytics project, I designed and implemented visualization tools in a Streamlit web application to identify trends and present predictive findings from academic datasets effectively.</p>
-                <a href="#" class="btn">Read More</a>
-            </div>
+            <nav>
+                <a href="#home" class="active"><i class='bx bx-home'></i> Home</a>
+                <a href="#about"><i class='bx bx-user'></i> About</a>
+                <a href="#education"><i class='bx bx-book'></i> Education</a>
+                <a href="#credentials"><i class='bx bx-certification'></i> Credentials</a>
+                <a href="#skills"><i class='bx bx-code-curly'></i> Skills</a>
+                <a href="#projects"><i class='bx bx-folder'></i> Projects</a>
+                <a href="#contact"><i class='bx bx-envelope'></i> Contact</a>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+                <i class='bx bx-moon' id="theme-icon"></i>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Hero / Home -->
+            <section id="home" class="section">
+                <header>
+                    <div class="hero-card">
+                        <p class="hero-eyebrow">Hello, I am</p>
+                        <h1>Jayniel</h1>
+                        <p>Data analyst & full-stack developer turning data into insights and ideas into working apps.</p>
+                        <div class="hero-links">
+                            <a href="#projects"><i class='bx bx-folder'></i> View Projects</a>
+                            <a href="https://drive.google.com/file/d/1cYqg_a1Ms-nTJDv_2YhV_J47eX0lPUiU/view" target="_blank" rel="noopener noreferrer"><i class='bx bx-download'></i> Download CV</a>
+                            <a href="#contact" class="secondary"><i class='bx bx-envelope'></i> Contact Me</a>
+                        </div>
+                    </div>
+                </header>
+            </section>
+
+            <!-- About -->
+            <section id="about" class="section">
+                <h2><i class='bx bx-user-circle'></i> About Me</h2>
+                <div class="about-content">
+                    <div class="about-intro">
+                        <p>
+                            I'm a Computer Engineering graduate, Class of 2026, from Batangas State University with a passion for data analytics,
+                            web development, and creating tools that make information accessible. I specialize in transforming complex data into actionable insights
+                            and building practical solutions that deliver impact.
+                        </p>
+                    </div>
+
+                    <p>
+                        Throughout my academic journey, I've developed a strong foundation in big data analytics, embedded systems, and cloud technologies.
+                        My coursework has equipped me with expertise in data visualization, networking infrastructure, and emerging technologies. I'm driven by
+                        the challenge of solving real-world problems through code and data-driven decision making.
+                    </p>
+
+                    <p>
+                        I have hands-on experience with modern development stacks and analytical tools, combined with a deep understanding of system design principles.
+                        Whether it's architecting scalable applications, optimizing data pipelines, or crafting intuitive user interfaces, I bring a methodical approach
+                        to every project I undertake.
+                    </p>
+
+                    <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.3rem;">What Drives Me</h3>
+                    <div class="about-section" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div class="highlight-card">
+                            <i class='bx bx-bar-chart-alt-2'></i>
+                            <h3>Data Storytelling</h3>
+                        </div>
+                        <div class="highlight-card">
+                            <i class='bx bx-code-alt'></i>
+                            <h3>Full-Stack Development</h3>
+                        </div>
+                        <div class="highlight-card">
+                            <i class='bx bx-lightbulb'></i>
+                            <h3>Problem Solving</h3>
+                        </div>
+                        <div class="highlight-card">
+                            <i class='bx bx-brain'></i>
+                            <h3>AI & ML Innovation</h3>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 1.5rem;">
+                        As I transition into my professional career, I'm excited to apply my technical skills and analytical mindset to contribute
+                        meaningful solutions in a collaborative environment. I'm actively seeking opportunities to grow as an engineer, mentor others, and
+                        make a positive impact on technology and data-driven innovation.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Coursework & Certifications -->
+            <section id="credentials" class="section">
+                <h2><i class='bx bx-certification'></i> Coursework, Certifications & Experience</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="year">University Coursework</span>
+                        <h3>Core Academic Focus: Big Data Analytics</h3>
+                        <ul>
+                            <li>Big Data Analytics</li>
+                            <li>Embedded Systems</li>
+                            <li>Cisco Networking</li>
+                            <li>Emerging Technologies</li>
+                            <li>Microprocessors</li>
+                            <li>Data Structures and Algorithms</li>
+                            <li>Object Oriented Programming</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <span class="year">Certifications</span>
+                        <h3>Professional Development Timeline</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="date">Jun 2026</div>
+                                <h4>Data Analytics Essentials</h4>
+                                <p><strong>Cisco Networking Academy</strong> â€” Data Analysis, Tableau, and related technical skills.</p>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="date">Jan 2026</div>
+                                <h4>The Bits and Bytes of Computer Networking</h4>
+                                <p><strong>Google</strong> â€” Credential ID: PSRUC8NFHQNF. Foundational networking and systems knowledge.</p>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="date">Jan 2026</div>
+                                <h4>Introduction to Data Science</h4>
+                                <p><strong>Simplilearn</strong> â€” Credential ID: 970618. Data Pipelines, Data Models, and advanced analytics skills.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card" style="margin-top:1.25rem;">
+                    <span class="year">Work Experience</span>
+                    <h3>Internship Experience</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="date">Feb 2026 - Apr 2026</div>
+                            <h4>Web Developer</h4>
+                            <p><strong>SeeYouDoc</strong>On-site internship focused on web development with Elixir and the Phoenix Framework.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="date">Key Achievements</div>
+                            <h4>Technical Skills & Projects</h4>
+                            <p>Mastered Elixir and Phoenix from scratch; contributed to RumbL App and Medigrant API (Filipino-Korean healthcare integration). Implemented REST APIs, database schema migrations, and unit tests. Reviewed peer code and debugged production issues.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="date">Collaboration</div>
+                            <h4>International Teamwork</h4>
+                            <p>Worked in Team Bravo alongside interns from diverse backgrounds. Participated in multi-national coordination with Korean stakeholders and Indian developers (DoctorKit team). Learned professional workflows, code review processes, and GitLab version control practices.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Education -->
+            <section id="education" class="section">
+                <h2><i class='bx bx-book'></i> Education</h2>
+                <div class="education-timeline">
+                    <!-- University -->
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">Aug 2022 - Jul 2026</span>
+                            <h3>Bachelor of Science in Computer Engineering</h3>
+                            <p class="timeline-school">Batangas State University</p>
+                            <p>Major focus: Big Data Analytics. Comprehensive coursework in embedded systems, networking, microprocessors, and advanced programming paradigms.</p>
+                        </div>
+                    </div>
+
+                    <!-- High School -->
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">2020 - 2022</span>
+                            <h3>Science, Technology, and Mathematics</h3>
+                            <p class="timeline-school">STI College Lipa</p>
+                            <p>Senior High School strand with focus on STEM subjects and scientific foundation.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+                </h2>
+            </section>
+
+            <!-- Skills -->
+            <section id="skills" class="section">
+                <h2><i class='bx bx-code-curly'></i> Skills & Technologies</h2>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>Top Skill: Programming</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">Elixir</span>
+                            <span class="skill-tag">Java</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Data & Analytics</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Data Analytics</span>
+                            <span class="skill-tag">Big Data Analytics</span>
+                            <span class="skill-tag">Machine Learning</span>
+                            <span class="skill-tag">Data Visualization</span>
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">Tableau</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Web Development</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Front-End Development</span>
+                            <span class="skill-tag">Back-End Development</span>
+                            <span class="skill-tag">PostgreSQL</span>
+                            <span class="skill-tag">Phoenix Framework</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Data Engineering & ML</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Data Pipelines</span>
+                            <span class="skill-tag">Data Modeling</span>
+                            <span class="skill-tag">Data Cleaning</span>
+                            <span class="skill-tag">Predictive Analytics</span>
+                            <span class="skill-tag">Computer Vision</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Tools & Platforms</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Git/GitHub</span>
+                            <span class="skill-tag">GitLab</span>
+                            <span class="skill-tag">Excel</span>
+                            <span class="skill-tag">Data Security</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects -->
+            <section id="projects" class="section">
+                <h2><i class='bx bx-code-alt'></i> Projects</h2>
+                <div class="project-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="web">Web Development</button>
+                    <button class="filter-btn" data-filter="data">Data Analytics</button>
+                    <button class="filter-btn" data-filter="ml">Machine Learning</button>
+                </div>
+                <div class="projects-grid">
+                    <!-- Thesis Project -->
+                    <div class="project-card" data-category="ml">
+                        <img src="images/Portfolio.png" alt="Automated Facial Recognition" class="project-img">
+                        <div class="project-body">
+                            <h3>Automated Facial Recognition Logging System</h3>
+                            <p><strong>Thesis Project</strong>AI-powered attendance and access logging system for BSU Library using YOLOv8 and data analytics for real-time facial recognition.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="#"><i class='bx bx-show'></i> Learn More</a>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio Builder -->
+                    <div class="project-card" data-category="web">
+                        <img src="images/Portfolio.png" alt="Portfolio" class="project-img">
+                        <div class="project-body">
+                            <h3>Portfolio Builder</h3>
+                            <p>A personal portfolio site with a dark-mode toggle, project slider, and responsive layout.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/AvaRiZ/Portfolio" target="_blank" rel="noopener noreferrer"><i class='bx bx-link-external'></i> Source</a>
+                            <a href="#" class="btn-link"><i class='bx bx-show'></i> Demo</a>
+                        </div>
+                    </div>
+
+                    <!-- EduBrawlers -->
+                    <div class="project-card" data-category="web">
+                        <img src="images/EDUBrawlers.png" alt="EduBrawlers" class="project-img">
+                        <div class="project-body">
+                            <h3>EduBrawlers</h3>
+                            <p>Two-player educational game that mixes calculus problems with arcade-style gameplay.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/fuzareu/EduBrawlers" target="_blank" rel="noopener noreferrer"><i class='bx bx-link-external'></i> Source</a>
+                            <a href="#" class="btn-link"><i class='bx bx-show'></i> Demo</a>
+                        </div>
+                    </div>
+
+                    <!-- ALRShop -->
+                    <div class="project-card" data-category="web">
+                        <img src="images/ALRShop.png" alt="ALRShop" class="project-img">
+                        <div class="project-body">
+                            <h3>ALRShop</h3>
+                            <p>Responsive e-commerce frontend built with Next.js, focusing on UI/UX and smooth checkout flow.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://alrs-shop.vercel.app/" target="_blank" rel="noopener noreferrer"><i class='bx bx-link-external'></i> Live</a>
+                            <a href="#" class="btn-link"><i class='bx bx-code'></i> Source</a>
+                        </div>
+                    </div>
+
+                    <!-- Tkinter Analytics Dashboard -->
+                    <div class="project-card" data-category="data">
+                        <img src="images/Tkinter-AD.png" alt="Tkinter Analytics Dashboard" class="project-img">
+                        <div class="project-body">
+                            <h3>Tkinter Analytics Dashboard</h3>
+                            <p>Desktop app built with Tkinter for visualizing academic demographic data.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/JMARKGualter/Academic-Demographics-Dashboard" target="_blank" rel="noopener noreferrer"><i class='bx bx-link-external'></i> Source</a>
+                            <a href="#" class="btn-link"><i class='bx bx-show'></i> Demo</a>
+                        </div>
+                    </div>
+
+                    <!-- Streamlit Data Analytics -->
+                    <div class="project-card" data-category="data">
+                        <img src="images/Data Analysis.png" alt="Streamlit Data Analytics" class="project-img">
+                        <div class="project-body">
+                            <h3>Streamlit Data Analytics Dashboard</h3>
+                            <p>Interactive simulation tool for faculty & student data with visualizations and trend predictions.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://data-analytics-for-csv-files-cv8bmnhj74s26rd8tmmcwm.streamlit.app/" target="_blank" rel="noopener noreferrer"><i class='bx bx-link-external'></i> Live</a>
+                            <a href="#" class="btn-link"><i class='bx bx-code'></i> Source</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact -->
+            <section id="contact" class="section">
+                <h2><i class='bx bx-envelope'></i> Get In Touch</h2>
+                <p class="about-content" style="text-align:center; margin-bottom:1.25rem;">If you want to collaborate, build something useful, or just say hello, feel free to reach out.</p>
+                <form class="contact-form" action="#" method="POST">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Email Address" required>
+                    <input type="text" name="subject" placeholder="Subject">
+                    <textarea name="message" placeholder="Your Message" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://www.linkedin.com/in/jayniel-pernecita" target="_blank" rel="noopener noreferrer">
+                <i class='bx bxl-linkedin'></i> LinkedIn
+            </a>
+            <a href="https://github.com/AvaRiZ" target="_blank" rel="noopener noreferrer">
+                <i class='bx bxl-github'></i> GitHub
+            </a>
+            <a href="mailto:jaynielpernecita@gmail.com">
+                <i class='bx bx-envelope'></i> Email
+            </a>
         </div>
-    </section>
-
-    <section class="project" id="project">
-        <h2 class="heading">Latest <span>Project</span></h2>
-
-            <div class="project-box">
-                <img src="images/Portfolio.png" alt="">
-
-                <div class="project-layer">
-                    <h4>Portofolio</h4>
-                    <p>This simple portfolio includes a variety of projects that reflect expertise in software development and design.</p>
-                    <a href="https://github.com/AvaRiZ/Portfolio"><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-
-            <div class="project-box">
-                <img src="images/EDUBrawlers.png" alt="">
-
-                <div class="project-layer">
-                    <h4>EduBrawlers</h4>
-                    <p>This project is a two player engaging game consisting of calculus problems.</p>
-                    <a href="https://github.com/fuzareu/EduBrawlers"><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-
-            <div class="project-box">
-                <img src="images/ALRShop.png" alt="">
-
-                <div class="project-layer">
-                    <h4>ALRShop</h4>
-                    <p>A collaborative university project to build a fully responsive online store using Next.js. Focused on frontend development to create a user-friendly interface and streamline the customer purchase workflow.</p>
-                    <a href="https://alrs-shop.vercel.app/"><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-
-            <div class="project-box">
-                <img src="images/Tkinter-AD.png" alt="">
-
-                <div class="project-layer">
-                    <h4>Tkinter Based Analytics Dashboard</h4>
-                    <p>A Tkinter-based desktop application designed for comprehensive analysis and visualization of academic demographic data. Provides interactive insights into student and faculty statistics.</p>
-                    <a href="https://github.com/JMARKGualter/Academic-Demographics-Dashboard "><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-
-            <div class="project-box">
-                <img src="images/Data Analysis.png" alt="">
-
-                <div class="project-layer">
-                    <h4>Streamlit Based Data Analytics Dashboard</h4>
-                    <p>This is a simulation tool for data analysis scenarios for Faculty and Students Data along with visualizations and trend predictions.</p>
-                    <a href="https://data-analytics-for-csv-files-cv8bmnhj74s26rd8tmmcwm.streamlit.app/"><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="contact" id="contact">
-        <h2 class="heading">Contact <span>Me!</span></h2>
-
-        <form action="#">
-            <div class="input-box">
-                <input type="text" placeholder="Full Name">
-                <input type="email" placeholder="Email Address">
-            </div>
-            <div class="input-box">
-                <input type="number" placeholder="Mobile Number">
-                <input type="text" placeholder="Email Subject">
-            </div>
-            <textarea name="" id="" cols="30" rows="10" placeholder="Your Message"></textarea>
-            <input type="submit" value="Send Message" class="btn">
-        </form>
-    </section>
-
-    <footer class="footer">
-        <div class="footer-text">
-            <p> @Yaji | jaynielpernecita@gmail.com | +639999085607 </p>
-        </div>
-
-        <div class="footer-iconTop">
-            <a href="#home"><i class='bx bx-up-arrow-alt'></i></a>
-        </div>
+        <p>&copy; 2026 Jayniel Pernecita. All rights reserved.</p>
     </footer>
 
-
+    <!-- Optional: keep existing scripts if needed -->
     <script src="https://unpkg.com/scrollreveal"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-
     <script src="script.js"></script>
 </body>
-
 </html>
