@@ -10,11 +10,13 @@
     --border: #e5e7eb;
     --shadow: 0 2px 8px rgba(0,0,0,0.08);
     --radius: 8px;
+    --base-font: 13px; /* global scale: 13px = ~81% of 16px default */
 }
 * { box-sizing: border-box; }
 body {
     margin: 0;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: var(--base-font);
     background:
         radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 24%),
         radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.10), transparent 26%),
@@ -39,6 +41,10 @@ body.dark-mode {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    transform: scale(0.8);
+    transform-origin: top left;
+    width: 125%; /* 100% / 0.8 = 125% to fill viewport after scale */
+    min-height: 125vh; /* allow content to push footer down naturally */
 }
 .topbar {
     position: sticky;
@@ -272,11 +278,11 @@ header p {
     color: var(--primary-hover);
 }
 .section {
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
 }
 .section + .section {
     border-top: 1px solid var(--border);
-    padding-top: 3rem;
+    padding-top: 2.5rem;
 }
 .section h2 {
     font-size: 2rem;
@@ -595,11 +601,11 @@ body.dark-mode .contact-form textarea {
 }
 footer {
     text-align: center;
-    padding: 2.5rem;
+    padding: 2rem;
     font-size: 0.95rem;
     color: var(--text-muted);
     border-top: 1px solid var(--border);
-    margin-top: 3rem;
+    margin-top: 1.5rem;
     background: var(--bg-card);
 }
 .footer-links {
@@ -685,6 +691,11 @@ footer {
 }
 /* Responsive */
 @media (max-width: 768px) {
+    .wrapper {
+        transform: none;
+        width: 100%;
+        height: auto;
+    }
     .topbar {
         flex-direction: column;
         align-items: flex-start;
